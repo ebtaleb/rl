@@ -23,6 +23,25 @@ def curses_cleanup(stdscr):
     curses.echo()
     curses.endwin()
 
+def initialize_player(x, y, floor, scr):
+    p = Player(x, y, floor)
+    scr.addch(p.y, p.x, p.char)
+    floor.tilelvl[p.y][p.x].player_presence = p
+
+    return p
+
+def initialize_floor(h, w, scr):
+    floor = Floor(h, w)
+    scr.addstr(0, 0, floor.stringlvl)
+
+    return floor
+
+def initialize_items(nb, floor):
+    pass
+
+def initialize_dungeon():
+    pass
+
 def init():
 
     try:
@@ -30,14 +49,11 @@ def init():
         height, width = screen.getmaxyx()
         x = width // 2
         y = height // 2
-        floor = Floor(40, 60)
-        player = Player(30, 20, floor)
 
-        screen.addstr(0, 0, floor.stringlvl)
-        screen.addch(player.y, player.x, player.char)
+        floor = initialize_floor(40, 60, screen)
+        player = initialize_player(30, 20, floor, screen)
     except curses.error:
-        screen.addstr(0, 0, floor.stringlvl)
-        screen.addch(player.y, player.x, player.char)
+        pass
     finally:
         return screen, player, floor
 

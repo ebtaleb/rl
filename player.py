@@ -5,7 +5,8 @@ class Player:
         self.y = y
         self.char = '@'
         self.current_floor = floor
-        self.inventory = [] 
+        self.inventory = []
+
 
     def move(self, direction, scr):
         """Update player position both in the floor object and its own coordinates."""

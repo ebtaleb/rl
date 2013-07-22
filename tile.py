@@ -12,6 +12,6 @@ class Tile:
 
         self.items = []
 
-        self.player = None
-        self.monster = None
+        self.player_presence = None
+        self.monster_presence = None
 

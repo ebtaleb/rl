@@ -23,16 +23,13 @@ def curses_cleanup(stdscr):
     curses.echo()
     curses.endwin()
 
-def initialize_player(x, y, floor, scr):
-    p = Player(x, y, floor)
-    scr.addch(p.y, p.x, p.char)
-    floor.tilelvl[p.y][p.x].player_presence = p
-
-    return p
-
-def initialize_floor(h, w, scr):
+def initialize_floor(h, w):
     floor = Floor(h, w)
-    scr.addstr(0, 0, floor.stringlvl)
+
+    try:
+        screen.addstr(0, 0, floor.stringlvl)
+    except curses.error:
+        pass
 
     return floor
 

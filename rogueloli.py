@@ -42,38 +42,36 @@ def initialize_items(nb, floor):
 def initialize_dungeon():
     pass
 
-def init():
+screen = curses_setup()
+floor = initialize_floor(40, 60)
+p = Player(30, 20, floor)
 
-    try:
-        screen = curses_setup()
-        height, width = screen.getmaxyx()
-        x = width // 2
-        y = height // 2
+to_be_displayed = [p]
 
-        floor = initialize_floor(40, 60, screen)
-        player = initialize_player(30, 20, floor, screen)
-    except curses.error:
-        pass
-    finally:
-        return screen, player, floor
+def display():
+    for obj in to_be_displayed:
+        screen.addch(obj.y, obj.x, obj.char)
+
+def clear():
+    for obj in to_be_displayed:
+        screen.addch(obj.y, obj.x, '.')
 
 def main():
 
-    screen, p, floor = init()
-
     try:
         while 1:
+
+            display()
 
             ch = chr(screen.getch())
 
             if ch == 'q':
                 break
 
-            p.move(ch, screen)
+            clear()
+            p.move(ch)
+            #clear()    TODO: why is there no clean if clear is put there? to be investigated
             screen.refresh()
-
-    except curses.error:
-        pass
 
     finally:
         curses_cleanup(screen)

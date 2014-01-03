@@ -2,6 +2,10 @@
 
 import curses
 
+import logging
+import logging.config
+import os
+
 from player import Player
 from floor import Floor
 
@@ -39,12 +43,6 @@ def initialize_items(nb, floor):
 def initialize_dungeon():
     pass
 
-screen = curses_setup()
-floor = initialize_floor(40, 60)
-p = Player(30, 20, floor)
-
-to_be_displayed = [p]
-
 def display():
     for obj in to_be_displayed:
         screen.addch(obj.y, obj.x, obj.char)
@@ -53,7 +51,26 @@ def clear():
     for obj in to_be_displayed:
         screen.addch(obj.y, obj.x, '.')
 
+screen = curses_setup()
+floor = initialize_floor(40, 60)
+
+to_be_displayed = []
+
 def main():
+
+    if not os.path.exists("playerpipe"):
+        os.mkfifo("playerpipe")
+
+    if not os.path.exists("itempipe"):
+        os.mkfifo("itempipe")
+
+    logging.config.fileConfig("log.conf", disable_existing_loggers=False)
+
+    player_log = logging.getLogger("player")
+    item_log = logging.getLogger("item")
+
+    p = Player(30, 20, floor)
+    to_be_displayed.append(p)
 
     try:
         while 1:
@@ -70,8 +87,12 @@ def main():
             #clear()    TODO: why is there no clean if clear is put there? to be investigated
             screen.refresh()
 
+    except KeyboardInterrupt:
+        pass
     finally:
         curses_cleanup(screen)
+        os.remove("playerpipe")
+        os.remove("itempipe")
 
 if __name__ == '__main__':
     main()

@@ -1,3 +1,5 @@
+import logging
+
 class Player:
 
     def __init__(self, x, y, floor):
@@ -6,6 +8,8 @@ class Player:
         self.char = '@'
         self.current_floor = floor
         self.inventory = []
+        self.logger = logging.getLogger('player')
+        self.logger.info("Player instanciated.")
 
 
     def move(self, direction):
@@ -41,6 +45,8 @@ class Player:
         if not self.coord_overflow(new_x, new_y) and self.current_floor.tilelvl[new_y][new_x].is_walkable:
             self.x = new_x
             self.y = new_y
+
+        self.logger.info("Currently at ("+ str(new_x) + ", " + str(new_y) + ")")
 
     def coord_overflow(self, x, y):
         return x < 0 or x > (self.current_floor.width - 1) or y < 0 or y > (self.current_floor.height - 1);

@@ -94,7 +94,6 @@ def main():
 
             clear()
             p.move(ch)
-            #clear()    TODO: why is there no clean if clear is put there? to be investigated
             screen.refresh()
 
     except KeyboardInterrupt:

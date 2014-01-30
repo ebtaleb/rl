@@ -30,3 +30,9 @@ class Floor:
 
         self.items_list = []
         self.monsters_list = []
+
+    def put_object(self, obj, x, y):
+        self.tilelvl[y][x].objects.insert(obj, 0)
+
+    def remove_object(self, x, y):
+        return self.tilelvl[y][x].objects.pop(0)

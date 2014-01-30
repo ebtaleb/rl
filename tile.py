@@ -10,7 +10,7 @@ class Tile:
         self.terrain = char
         self.is_walkable = self.walkables[char]
 
-        self.items = []
+        self.objects = []
 
         self.player_presence = None
         self.monster_presence = None

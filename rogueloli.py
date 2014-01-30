@@ -8,6 +8,7 @@ import os
 
 from player import Player
 from floor import Floor
+from item import Item
 
 def curses_setup():
 
@@ -37,8 +38,16 @@ def initialize_floor(h, w):
 
     return floor
 
-def initialize_items(nb, floor):
-    pass
+def initialize_items(nb):
+
+    items = []
+
+    for i in range(1, nb):
+        current = Item("Obj"+str(nb), 'I', None, i, i)
+        items.append(current)
+        to_be_displayed.append(current)
+
+    return items
 
 def initialize_dungeon():
     pass
@@ -55,6 +64,7 @@ screen = curses_setup()
 floor = initialize_floor(40, 60)
 
 to_be_displayed = []
+list_of_items = initialize_items(5)
 
 def main():
 

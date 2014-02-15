@@ -69,13 +69,17 @@ list_of_items = initialize_items(5)
 
 def main():
 
-    if not os.path.exists("playerpipe"):
-        os.mkfifo("playerpipe")
+    disable_loggers = True
 
-    if not os.path.exists("itempipe"):
-        os.mkfifo("itempipe")
+    if not disable_loggers:
 
-    logging.config.fileConfig("log.conf", disable_existing_loggers=False)
+        if not os.path.exists("playerpipe"):
+            os.mkfifo("playerpipe")
+
+        if not os.path.exists("itempipe"):
+            os.mkfifo("itempipe")
+
+    logging.config.fileConfig("log.conf", disable_existing_loggers=disable_loggers)
 
     player_log = logging.getLogger("player")
     item_log = logging.getLogger("item")
@@ -112,8 +116,10 @@ def main():
         pass
     finally:
         curses_cleanup(screen)
-        os.remove("playerpipe")
-        os.remove("itempipe")
+
+        if not disable_loggers:
+            os.remove("playerpipe")
+            os.remove("itempipe")
 
 if __name__ == '__main__':
     main()

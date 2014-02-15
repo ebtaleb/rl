@@ -45,7 +45,8 @@ def initialize_items(nb):
     for i in range(1, nb):
         current = Item("Obj"+str(nb), 'I', None, i, i)
         items.append(current)
-        to_be_displayed.append(current)
+        to_be_displayed.add(current)
+        floor.put_object(current, current.x, current.y)
 
     return items
 
@@ -63,7 +64,7 @@ def clear():
 screen = curses_setup()
 floor = initialize_floor(40, 60)
 
-to_be_displayed = []
+to_be_displayed = set()
 list_of_items = initialize_items(5)
 
 def main():
@@ -80,7 +81,7 @@ def main():
     item_log = logging.getLogger("item")
 
     p = Player(30, 20, floor)
-    to_be_displayed.append(p)
+    to_be_displayed.add(p)
 
     try:
         while 1:
@@ -91,6 +92,17 @@ def main():
 
             if ch == 'q':
                 break
+
+            if ch == 'g':
+                item_to_display = p.get_object_on_floor()
+                to_be_displayed.discard(item_to_display)
+                continue
+
+            if ch == 'p':
+                item_to_display = p.put_object_on_floor(None)
+                if item_to_display is not None:
+                    to_be_displayed.add(item_to_display)
+                continue
 
             clear()
             p.move(ch)

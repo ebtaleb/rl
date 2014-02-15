@@ -7,7 +7,7 @@ class Player:
         self.y = y
         self.char = '@'
         self.current_floor = floor
-        self.inventory = []
+        self.inventory = set()
         self.logger = logging.getLogger('player')
         self.logger.info("Player instanciated.")
 
@@ -50,4 +50,29 @@ class Player:
 
     def coord_overflow(self, x, y):
         return x < 0 or x > (self.current_floor.width - 1) or y < 0 or y > (self.current_floor.height - 1);
+
+    def get_object_on_floor(self):
+        try:
+            obj = self.current_floor.remove_object(self.x, self.y)
+            obj.x = -1
+            obj.y = -1
+            obj.owner = self
+            self.inventory.add(obj)
+            self.logger.info("Got a " + obj.name)
+            return obj
+        except AttributeError:
+            pass
+
+    def put_object_on_floor(self, obj):
+        try:
+            popped_item = self.inventory.pop()
+            popped_item.x = self.x
+            popped_item.y = self.y
+            popped_item.owner = None
+            self.current_floor.put_object(popped_item, self.x, self.y)
+            self.logger.info("Dropped a " + popped_item.name)
+            self.logger.info("Dropped a " + popped_item.name)
+            return popped_item
+        except KeyError:
+            pass
 

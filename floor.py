@@ -28,11 +28,9 @@ class Floor:
             self.stringlvl += space + '\n'
         self.stringlvl += wall + '\n'
 
-        self.items_list = []
-        self.monsters_list = []
-
     def put_object(self, obj, x, y):
-        self.tilelvl[y][x].objects.insert(obj, 0)
+        self.tilelvl[y][x].objects.insert(0, obj)
 
     def remove_object(self, x, y):
-        return self.tilelvl[y][x].objects.pop(0)
+        if self.tilelvl[y][x].objects:
+            return self.tilelvl[y][x].objects.pop(0)

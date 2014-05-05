@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import curses
-
 import logging
 import logging.config
 import os
@@ -9,67 +7,37 @@ import os
 from player import Player
 from floor import Floor
 from item import Item
+from display import Display
 
-def curses_setup():
+def initialize_floor(h, w, d):
+	floor = Floor(h, w)
+	d.print_to_display(0, 0, floor.stringlvl)
+	return floor
 
-    stdscr = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
-    curses.curs_set(0)
-    stdscr.keypad(1)
+def initialize_items(nb, d):
 
-    return stdscr
+	items = []
 
-def curses_cleanup(stdscr):
+	for i in range(1, nb):
+		current = Item("Obj"+str(nb), 'I', None, i, i)
+		items.append(current)
+		d.add_item_to_display(current)
+		floor.put_object(current, current.x, current.y)
 
-    curses.nocbreak()
-    curses.curs_set(1)
-    stdscr.keypad(0)
-    curses.echo()
-    curses.endwin()
+	return items
 
-def initialize_floor(h, w):
-    floor = Floor(h, w)
+def get(p, display):
 
-    try:
-        screen.addstr(0, 0, floor.stringlvl)
-    except curses.error:
-        pass
+	item_to_display = p.get_object_on_floor()
+	display.remove_from_display(item_to_display)
 
-    return floor
+def put(p, display):
 
-def initialize_items(nb):
+	item_to_display = p.put_object_on_floor(None)
+	if item_to_display is not None:
+		display.add_item_to_display(item_to_display)
 
-    items = []
-
-    for i in range(1, nb):
-        current = Item("Obj"+str(nb), 'I', None, i, i)
-        items.append(current)
-        to_be_displayed.add(current)
-        floor.put_object(current, current.x, current.y)
-
-    return items
-
-def initialize_dungeon():
-    pass
-
-def display():
-    for obj in to_be_displayed:
-        screen.addch(obj.y, obj.x, obj.char)
-
-def clear():
-    for obj in to_be_displayed:
-        screen.addch(obj.y, obj.x, '.')
-
-screen = curses_setup()
-floor = initialize_floor(40, 60)
-
-to_be_displayed = set()
-list_of_items = initialize_items(5)
-
-def main():
-
-    disable_loggers = True
+def initialize_logging(disable_loggers):
 
     if not disable_loggers:
 
@@ -81,45 +49,50 @@ def main():
 
     logging.config.fileConfig("log.conf", disable_existing_loggers=disable_loggers)
 
-    player_log = logging.getLogger("player")
-    item_log = logging.getLogger("item")
+display = Display("log")
+display.setup()
+
+floor = initialize_floor(40, 60, display)
+
+list_of_items = initialize_items(5, display)
+
+action_dict = { 'q' : display.cleanup,
+		'g' : get,
+		'p' : put }
+
+def main():
+
+    disable_loggers = True
+    initialize_logging(disable_loggers)
 
     p = Player(30, 20, floor)
-    to_be_displayed.add(p)
+    display.add_item_to_display(p)
 
     try:
         while 1:
 
-            display()
+            display.display()
 
-            ch = chr(screen.getch())
+            ch = display.get_char()
+
+            if ch in "pg":
+                action_dict[ch](p, display)
 
             if ch == 'q':
-                break
+                action_dict[ch]()
 
-            if ch == 'g':
-                item_to_display = p.get_object_on_floor()
-                to_be_displayed.discard(item_to_display)
-                continue
-
-            if ch == 'p':
-                item_to_display = p.put_object_on_floor(None)
-                if item_to_display is not None:
-                    to_be_displayed.add(item_to_display)
-                continue
-
-            clear()
-            p.move(ch)
-            screen.refresh()
+            display.clear()
+            if ch in "123456789":
+                p.move(ch)
+            display.refresh()
 
     except KeyboardInterrupt:
         pass
     finally:
-        curses_cleanup(screen)
-
         if not disable_loggers:
             os.remove("playerpipe")
             os.remove("itempipe")
+        display.cleanup()
 
 if __name__ == '__main__':
     main()

@@ -11,7 +11,6 @@ class Player:
         self.logger = logging.getLogger('player')
         self.logger.info("Player instanciated.")
 
-
     def move(self, direction):
         """Update player position."""
 
@@ -34,8 +33,8 @@ class Player:
             new_x = self.x + 1
             new_y = self.y - 1
         elif direction == '1':
-            new_x = self.x - 1 
-            new_y = self.y + 1                    
+            new_x = self.x - 1
+            new_y = self.y + 1
         elif direction == '3':
             new_x = self.x + 1
             new_y = self.y + 1

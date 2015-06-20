@@ -12,6 +12,6 @@ class Tile:
 
         self.objects = []
 
-        self.player_presence = None
-        self.monster_presence = None
+        self.player_presence = False
+        self.monster_presence = False
 

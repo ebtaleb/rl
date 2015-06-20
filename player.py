@@ -8,6 +8,7 @@ class Player:
         self.char = '@'
         self.current_floor = floor
         self.inventory = set()
+        self.current_floor.tilelvl[y][x].player_presence = True
         self.logger = logging.getLogger('player')
         self.logger.info("Player instanciated.")
 
@@ -42,8 +43,10 @@ class Player:
             return
 
         if not self.coord_overflow(new_x, new_y) and self.current_floor.tilelvl[new_y][new_x].is_walkable:
+            self.current_floor.tilelvl[self.y][self.x].player_presence = False
             self.x = new_x
             self.y = new_y
+            self.current_floor.tilelvl[new_y][new_x].player_presence = True
 
         self.logger.info("Currently at ("+ str(new_x) + ", " + str(new_y) + ")")
 

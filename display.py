@@ -3,10 +3,11 @@ import sys
 
 class Display:
 
-    def __init__(self, loggers):
+    def __init__(self, loggers, p):
         self.__screen = None
         self.__loggers = loggers
-        self.__to_be_displayed = set()
+        self.__to_be_displayed = []
+        self.player_ref = p
 
     def setup(self):
         stdscr = curses.initscr()
@@ -27,10 +28,15 @@ class Display:
         sys.exit(0)
 
     def add_item_to_display(self, obj):
-        self.__to_be_displayed.add(obj)
+        self.__to_be_displayed.insert(0, obj)
 
     def remove_from_display(self, obj):
-        self.__to_be_displayed.discard(obj)
+        index = 0
+        for o in self.__to_be_displayed:
+            if o == obj:
+                self.__to_be_displayed.pop(index)
+                return
+            index = index + 1
 
     def print_to_display(self, x, y, string):
         try:
@@ -45,6 +51,7 @@ class Display:
         return chr(self.__screen.getch())
 
     def display(self):
+        self.__to_be_displayed.append(self.player_ref)
         for obj in self.__to_be_displayed:
             self.__screen.addch(obj.y, obj.x, obj.char)
 

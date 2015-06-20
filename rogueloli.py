@@ -50,10 +50,13 @@ def initialize_logging(disable_loggers):
 
     logging.config.fileConfig("log.conf", disable_existing_loggers=disable_loggers)
 
-display = Display("log")
+floor = Floor(40, 60)
+p = Player(30, 20, floor)
+display = Display("log", p)
 display.setup()
+display.add_item_to_display(p)
 
-floor = initialize_floor(40, 60, display)
+display.print_to_display(0, 0, floor.stringlvl)
 
 list_of_items = initialize_items(5, display)
 
@@ -65,9 +68,6 @@ def main():
 
     disable_loggers = True
     initialize_logging(disable_loggers)
-
-    p = Player(30, 20, floor)
-    display.add_item_to_display(p)
 
     try:
         while 1:

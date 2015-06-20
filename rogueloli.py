@@ -3,6 +3,7 @@
 import logging
 import logging.config
 import os
+import curses
 
 from player import Player
 from floor import Floor
@@ -80,6 +81,10 @@ def main():
 
             if ch == 'q':
                 action_dict[ch]()
+
+            if ch == 'i':
+                display.inven()
+                display.print_to_display(0, 0, floor.stringlvl)
 
             display.clear()
             if ch in "123456789":
